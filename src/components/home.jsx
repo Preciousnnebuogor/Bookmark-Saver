@@ -5,6 +5,25 @@ export default function Home() {
     name: "",
     url: "",
   });
+  const [display, setDisplay] = useState([]);
+
+  function handleSubmit() {
+    if (!inputData.name || !inputData.url) return;
+
+    let validURL = inputData.url;
+    if (!/^https?:\/\//i.test(validURL)) {
+      validURL = "https://" + validURL;
+    }
+
+    setDisplay((data) => [...data, inputData]);
+    setInputData({ name: "", url: "" });
+  }
+
+  function handleDelete(index) {
+    const updated = display.filter((none, i) => i !== index); // ✅ Remove by index
+    setDisplay(updated);
+  }
+
   return (
     <div className="container">
       <div className="content">
@@ -17,7 +36,7 @@ export default function Home() {
             onChange={(e) =>
               setInputData((prev) => ({
                 ...prev,
-                [e.target.value]: e.target.value,
+                [e.target.name]: e.target.value,
               }))
             }
             value={inputData.name}
@@ -26,18 +45,39 @@ export default function Home() {
             placeholder="Bookmrk URL"
             name="url"
             type="url"
-            onChange={(e) => setInputData((prev) => ({
-                ...prev,[e.target.value]: e.target.value
-            }))}
+            onChange={(e) =>
+              setInputData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             value={inputData.url}
           />
-          <button className="butt">Add Bookmark</button>
+          <button onClick={handleSubmit} className="butt">
+            Add Bookmark
+          </button>
         </div>
 
-        <div className="display">
-          <p>title</p>
-          <p>remove</p>
-        </div>
+        {display.length > 0 && (
+          <div className="display">
+            {display.map((data, index) => {
+              return (
+                <div className="display-data" key={index}>
+                  <a
+                    href={data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <p>{data.name}</p>
+                    {/* <p>{data.url}</p> */}
+                  </a>
+                  <button onClick={() => handleDelete(index)} className="remove">remove</button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
