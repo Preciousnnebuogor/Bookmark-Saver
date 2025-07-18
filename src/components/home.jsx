@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [inputData, setInputData] = useState({
@@ -15,14 +15,31 @@ export default function Home() {
       validURL = "https://" + validURL;
     }
 
-    setDisplay((data) => [...data, inputData]);
+    // setDisplay((data) => [...data, inputData]);
+    const newData = { name: inputData.name, url: validURL };
+
+    const updatedDisplay = [...display, newData];
+    setDisplay(updatedDisplay);
+    localStorage.setItem("user", JSON.stringify(updatedDisplay)); 
+
     setInputData({ name: "", url: "" });
+
   }
 
   function handleDelete(index) {
     const updated = display.filter((none, i) => i !== index); // ✅ Remove by index
     setDisplay(updated);
+    
+    localStorage.setItem("user", JSON.stringify(updated));
   }
+
+  useEffect(() => {
+    const saved = localStorage.getItem("user");
+    if (saved) {
+      setDisplay(JSON.parse(saved));
+    }
+  }, []);
+
 
   return (
     <div className="container">
@@ -70,7 +87,6 @@ export default function Home() {
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                     <p>{data.name}</p>
-                    {/* <p>{data.url}</p> */}
                   </a>
                   <button onClick={() => handleDelete(index)} className="remove">remove</button>
                 </div>
