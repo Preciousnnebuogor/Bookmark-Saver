@@ -88,7 +88,7 @@ export default function Home() {
                   >
                     <p>{data.name}</p>
                   </a>
-                  <button onClick={() => handleDelete(index)} className="remove">remove</button>
+                  <button onClick={() => handleDelete(index)} className="remove">Remove</button>
                 </div>
               );
             })}
